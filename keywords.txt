@@ -1,0 +1,30 @@
+#######################################
+# Syntax Coloring Map For DW1000Positioning
+#######################################
+
+#######################################
+# Library (KEYWORD1)
+#######################################
+
+DW1000Positioning   KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+initBeacons		KEYWORD2
+startAsAnchor		KEYWORD2
+startAsBeacon		KEYWORD2
+addBeacon		KEYWORD2
+removeBeacon		KEYWORD2
+serialSendPosititions	KEYWORD2
+setState		KEYWORD2	
+serialSendPositition	KEYWORD2
+loop			KEYWORD2
+createJsonNode		KEYWORD2	
+createJsonNodes		KEYWORD2
+getState		KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
