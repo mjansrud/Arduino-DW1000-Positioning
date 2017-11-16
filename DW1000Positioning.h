@@ -11,58 +11,66 @@
 
 #include <string.h>
 #include <arduino.h>
+#include <ArduinoJson.h>
+
+// conts
+#define _NUM_DEVICES 4
+#define _LEN_DATA 90
 
 // structs
 struct _Node{
-    String type;
-    uint16_t address = 0;
+    bool active;
+    uint8_t address = 0;
     float distance = 0.0;
     struct {
         float x = 0.0;
         float y = 0.0;
         float z = 0.0;
     } position;
+    struct {
+        float distance = 0.0;
+    } distances[_NUM_DEVICES];
 };
 
-// states
-enum _STATES{
-    CONFIG,  //Anchor -> Receive messages/distanes from beacons, Beacons -> Fetch distances from other beacons
-    SENDER,  //Beacons -> Send all distances to anchor
-    RECEIVER,//Anchor -> Receive all distances from beacon, parallell with SENDER
-    RANGER,  //Nodes receives distances from other nodes
-};
-
-// states
 enum _MESSAGE_TYPE{
     POSITION,
     DISTANCE,
 };
 
-// conts
-#define _NUM_NETWORK_DEVICES 3
+// states
+enum _STATES{
+    CONFIG,
+    SENDER,         //Anchors -> Send all distances to tag
+    RECEIVER,       //Tag -> Receive all distances from Anchors, parallell with SENDER
+    RANGING,        //Nodes receives distances from other nodes
+    INVALID,
+};
 
-// Results returned from the decoder
+
 class DW1000PositioningClass {
   public:
     
-    void DW1000PositioningClass::startAsAnchor(uint16_t address);
-    void DW1000PositioningClass::startAsBeacon(uint16_t address);
-    void DW1000PositioningClass::initTestBeacons();
-    void DW1000PositioningClass::initEmptyBeacons();
-    void DW1000PositioningClass::addNetworkDevice(uint16_t address);
-    void DW1000PositioningClass::removeNetworkDevice(uint16_t address);
+    void DW1000PositioningClass::startAsAnchor(uint8_t address);
+    void DW1000PositioningClass::startAsTag(uint8_t address);
+    void DW1000PositioningClass::initTestDevices();
+    void DW1000PositioningClass::initDevices();
+    void DW1000PositioningClass::activeDevice(uint8_t address);
+    void DW1000PositioningClass::inactiveDevice(uint8_t address);
     void DW1000PositioningClass::setState(_STATES state);
+    void DW1000PositioningClass::calculateAnchorPositions();
+    void DW1000PositioningClass::calculateTagPositions();
+    void DW1000PositioningClass::calculatePositions();
     void DW1000PositioningClass::serialSendPosititions();
     void DW1000PositioningClass::serialSendPositition(struct _Node _node);
     void DW1000PositioningClass::serialSendDistances();
     void DW1000PositioningClass::serialSendDistance(struct _Node _node);
-    void DW1000PositioningClass::loop();
-    void DW1000PositioningClass::setDistance(uint16_t _address, float _distance);
+    void DW1000PositioningClass::serialDrawDistances();
+    void DW1000PositioningClass::setDistance(uint8_t _address, float _distance);
+    void DW1000PositioningClass::setDistanceBetweenDevices(uint8_t _from, uint8_t _to, float _distance);
+    void DW1000PositioningClass::calculatePositionsAndDraw();
     struct _Node DW1000PositioningClass::getNextDevice();
-    struct _Node DW1000PositioningClass::getDevice();
-    String DW1000PositioningClass::createJsonPosition(struct _Node node);
+    struct _Node* DW1000PositioningClass::getDevice();
     String DW1000PositioningClass::createJsonDistance(struct _Node node);
-    String DW1000PositioningClass::createJsonPositions();
     String DW1000PositioningClass::createJsonDistances();
     _STATES DW1000PositioningClass::getState();
 
@@ -70,9 +78,9 @@ class DW1000PositioningClass {
     
     _STATES _state = CONFIG;
     int _nextDevice = 0;
-    bool _isAnchor = true;
-    struct _Node _device;
-    struct _Node _networkDevices[_NUM_NETWORK_DEVICES];
+    bool _isTag = true;
+    struct _Node* _device;
+    struct _Node _devices[_NUM_DEVICES];
     
 };
 
