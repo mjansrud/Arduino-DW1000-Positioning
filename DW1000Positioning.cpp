@@ -1,10 +1,10 @@
-/*
- * Fader
- * Version 0.1 October, 2015
- * Copyright 2015 Alan Zucconi
- *
+/**
+ * DW1000Positioning.cpp
+ * Based on DW1000Ranging library by Thomas Trojer
+ * Written by Morten Jansrud
+ * https://mortenjansrud.com
+ * Feel free to modify and redistribute
  */
-
 
 #include "DW1000Positioning.h"
 
